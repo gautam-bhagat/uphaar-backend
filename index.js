@@ -15,6 +15,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/device',require('./routes/deviceAPI'))
+app.use('/api/hospital',require('./routes/hospitalAPI'))
+
 
 app.listen(port,()=>{
     console.log(`Running at ${port}`)
