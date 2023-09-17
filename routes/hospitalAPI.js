@@ -19,6 +19,7 @@ hospRouter.post('/add',bypass, async (req,res)=>{
     try{
         const {hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone} = req.body;
         console.log(req.body);
+        console.log(hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone);
     const data = new Hospital(req.body);
     data.save();
     success = 1;
