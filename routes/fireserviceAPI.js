@@ -1,27 +1,27 @@
 const express = require('express');
 const bypass = require('../middleware/bypass');
-const Hospital = require('../models/Hospital');
+const FireService = require('../models/FireService');
 
 const hospRouter = express.Router();
 
 hospRouter.get('/',bypass, (req, res) => {
-    res.send('HOSPITAL API WORKING')
+    res.send('FIRE SERVICE API WORKING')
 });
 
 
 hospRouter.get('/all',bypass,async (req, res) => {
-    const all = await Hospital.find({});
+    const all = await FireService.find({});
     res.status(200).json(all);
 });
 
 hospRouter.post('/add',bypass, async (req,res)=>{
     let success = 0;
     try{
-        const {hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone} = req.body;
+        const {fname,faddress, fcity,fstate,fpincode,flat,flong,fphone} = req.body;
         // console.log(req.body);
         // console.log(hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone);
-        if(hname && haddress && hcity && hstate && hpincode && hlat && hlong && hphone){
-            const data = new Hospital(req.body);
+        if(fname && faddress && fcity && fstate && fpincode && flat && flong && fphone){
+            const data = new FireService(req.body);
             data.save();
             success = 1;
             let message = 'Added';
@@ -41,19 +41,19 @@ hospRouter.post('/add',bypass, async (req,res)=>{
 hospRouter.put('/add',bypass, async (req,res)=>{
     let success = 0;
     try{
-        const {_id, hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone} = req.body;
+        const {_id, fname,faddress, fcity,fstate,fpincode,flat,flong,fphone} = req.body;
 
         const query = {"_id":_id}
 
         //check if data exists
         let found = false
-        await Hospital.exists(query).then(result => {
+        await FireService.exists(query).then(result => {
             if(result) {found = true;}
         })
 
         //if data exists update it
         if(found){
-            await Hospital.updateOne(query,{'hname':hname,'haddress':haddress, 'hcity':hcity,'hstate':hstate,'hpincode':hpincode,'hlat':hlat,'hlong':hlong,'hphone':hphone});
+            await FireService.updateOne(query,{'fname':fname,'faddress':faddress, 'fcity':fcity,'fstate':fstate,'fpincode':fpincode,'flat':flat,'flong':flong,'fphone':fphone});
 
             success = 1;
             let message = 'Updated';
@@ -82,13 +82,13 @@ hospRouter.delete('/',bypass,async (req, res) => {
 
         //check if data exists
         let found = false
-        await Hospital.exists(query).then(result => {
+        await FireService.exists(query).then(result => {
             if(result) {found = true;}
         })
 
         //if data exists update it
         if(found){
-            await Hospital.deleteOne(query);
+            await FireService.deleteOne(query);
 
             success = 1;
             let message = 'Deleted';
