@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
 app.use('/api/device',require('./routes/deviceAPI'))
 app.use('/api/hospital',require('./routes/hospitalAPI'))
 app.use('/api/fire',require('./routes/fireserviceAPI'))
+app.use('/api/police',require('./routes/policeAPI'))
 
 
 app.listen(port,()=>{

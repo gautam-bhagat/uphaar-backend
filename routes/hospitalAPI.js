@@ -11,7 +11,8 @@ hospRouter.get('/',bypass, (req, res) => {
 
 hospRouter.get('/all',bypass,async (req, res) => {
     const all = await Hospital.find({});
-    res.status(200).json(all);
+    let obj = { results : all}
+    res.status(200).json(obj);
 });
 
 hospRouter.post('/add',bypass, async (req,res)=>{
