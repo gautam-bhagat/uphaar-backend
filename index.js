@@ -44,7 +44,7 @@ app.use('/api/device',require('./routes/deviceAPI'))
 app.use('/api/hospital',require('./routes/hospitalAPI'))
 app.use('/api/fire',require('./routes/fireserviceAPI'))
 app.use('/api/police',require('./routes/policeAPI'))
-
+app.use('/api/users',require('./routes/UserAPI'))
 
 app.listen(port,()=>{
     console.log(`Running at ${port}`)
