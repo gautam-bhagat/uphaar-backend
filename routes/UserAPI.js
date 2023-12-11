@@ -2,6 +2,8 @@ const express = require("express");
 const bypass = require("../middleware/bypass");
 const Users = require("../models/Users");
 
+const {encryptPassword,decryptPassword} = require('../utils')
+
 require("dotenv").config();
 
 const UserRouter = express.Router();
@@ -34,7 +36,10 @@ UserRouter.post("/login", bypass, async (req, res) => {
     if (email && password) {
       const fetchedUser = await Users.findOne({ email: email });
       if (fetchedUser) {
-        if (password === fetchedUser.password) {
+
+        const match = decryptPassword(password,fetchedUser.password)
+        if (match) {
+            
           let data = {
             id: fetchedUser._id,
           };
@@ -46,7 +51,7 @@ UserRouter.post("/login", bypass, async (req, res) => {
         }
       } else {
         success = 0;
-        let message = "Internal Server Error";
+        let message = "Invalid Credentials !";
         res.status(500).json({ success, message });
       }
     } else {
@@ -67,23 +72,15 @@ UserRouter.post("/add", bypass, async (req, res) => {
     const { uname, email, password } = req.body;
 
     if (uname && email && password) {
-      //     const saltRounds = 10;
-      //     const salt = await bcrypt.genSalt(saltRounds);
+      
+      const encryptedPassword = await encryptPassword(password);
+      const data = new Users({
+        uname : uname,
+        password : encryptedPassword,
+        email : email
+      });
 
-      // // Hash the password with the salt
-      // const hashedPassword = await bcrypt.hash(password, salt);
-
-      // // Create a new user with the hashed password
-      // const newUser = new User({
-      //     uname: uname,
-      //     email:email,
-      //     password: hashedPassword
-      // });
-
-      // // Save the user to the database
-      // await newUser.save();
-      const data = new Users(req.body);
-      data.save();
+      await data.save();
       success = 1;
       let message = "User Added";
       res.status(201).json({ success, message });
@@ -94,5 +91,6 @@ UserRouter.post("/add", bypass, async (req, res) => {
     res.status(500).json({ success, message });
   }
 });
+
 
 module.exports = UserRouter;
