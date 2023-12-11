@@ -2,7 +2,12 @@ const express = require("express");
 const bypass = require("../middleware/bypass");
 const Users = require("../models/Users");
 
+require("dotenv").config();
+
 const UserRouter = express.Router();
+
+const jwt = require("jsonwebtoken");
+const SecretKey = process.env.JWT_SECRET_KEY;
 
 UserRouter.get("/:uname", bypass, async (req, res) => {
   try {
@@ -19,6 +24,40 @@ UserRouter.get("/:uname", bypass, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+UserRouter.post("/login", bypass, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (email && password) {
+      const fetchedUser = await Users.findOne({ email: email });
+      if (fetchedUser) {
+        if (password === fetchedUser.password) {
+          let data = {
+            id: fetchedUser._id,
+          };
+
+          const token = jwt.sign(data, SecretKey);
+          success = 1;
+          let message = "Logged in";
+          res.status(200).json({ success, token, message });
+        }
+      } else {
+        success = 0;
+        let message = "Internal Server Error";
+        res.status(500).json({ success, message });
+      }
+    } else {
+      success = 0;
+      let message = "Internal Server Error";
+      res.status(500).json({ success, message });
+    }
+  } catch (error) {
+    success = 0;
+    let message = "Internal Server Error";
+    res.status(500).json({ success, message });
   }
 });
 
