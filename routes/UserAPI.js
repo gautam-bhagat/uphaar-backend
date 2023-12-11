@@ -37,7 +37,8 @@ UserRouter.post("/login", bypass, async (req, res) => {
       const fetchedUser = await Users.findOne({ email: email });
       if (fetchedUser) {
 
-        const match = decryptPassword(password,fetchedUser.password)
+        const match = await decryptPassword(password,fetchedUser.password)
+        console.log(match)
         if (match) {
             
           let data = {
@@ -49,21 +50,25 @@ UserRouter.post("/login", bypass, async (req, res) => {
           let message = "Logged in";
           res.status(200).json({ success, token, message });
         }
-      } else {
+      else {
         success = 0;
-        let message = "Invalid Credentials !";
+        let message = "password doesn't matched";
+        //throw new Error("Password doesn't matched !");
+
         res.status(500).json({ success, message });
       }
+    }
     } else {
       success = 0;
-      let message = "Internal Server Error";
+      let message = "Invalid email or password";
+      //throw new Error("Invalid email or password");
+
       res.status(500).json({ success, message });
     }
   } catch (error) {
     success = 0;
-    let message = "Internal Server Error";
-    res.status(500).json({ success, message });
-  }
+    res.status(500).json({ success, error});
+}
 });
 
 UserRouter.post("/add", bypass, async (req, res) => {
@@ -72,7 +77,8 @@ UserRouter.post("/add", bypass, async (req, res) => {
     const { uname, email, password } = req.body;
 
     if (uname && email && password) {
-      
+    //   const uname=Users.findOne({uname:uname})
+    //   const password=Users.findOne({password:password})
       const encryptedPassword = await encryptPassword(password);
       const data = new Users({
         uname : uname,
