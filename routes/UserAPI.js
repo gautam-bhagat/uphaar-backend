@@ -11,23 +11,23 @@ const UserRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const SecretKey = process.env.JWT_SECRET_KEY;
 
-UserRouter.get("/:uname", bypass, async (req, res) => {
-  try {
-    const allUsers = await Users.find({});
-    const matchingUser = allUsers.find(
-      (user) => user.uname === req.params.uname
-    );
+// UserRouter.get("/:uname", bypass, async (req, res) => {
+//   try {
+//     const allUsers = await Users.find({});
+//     const matchingUser = allUsers.find(
+//       (user) => user.uname === req.params.uname
+//     );
 
-    if (matchingUser) {
-      res.send("uname valid");
-    } else {
-      res.send("invalid");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//     if (matchingUser) {
+//       res.send("uname valid");
+//     } else {
+//       res.send("invalid");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 UserRouter.post("/login", bypass, async (req, res) => {
   try {
