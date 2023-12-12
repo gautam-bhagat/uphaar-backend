@@ -11,23 +11,23 @@ const UserRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const SecretKey = process.env.JWT_SECRET_KEY;
 
-// UserRouter.get("/:uname", bypass, async (req, res) => {
-//   try {
-//     const allUsers = await Users.find({});
-//     const matchingUser = allUsers.find(
-//       (user) => user.uname === req.params.uname
-//     );
+UserRouter.get("/:uname", bypass, async (req, res) => {
+  try {
+    const allUsers = await Users.find({});
+    const matchingUser = allUsers.find(
+      (user) => user.uname === req.params.uname
+    );
 
-//     if (matchingUser) {
-//       res.send("uname valid");
-//     } else {
-//       res.send("invalid");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
+    if (matchingUser) {
+      res.send("uname valid");
+    } else {
+      res.send("invalid");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 UserRouter.post("/login", bypass, async (req, res) => {
   try {
@@ -74,14 +74,23 @@ UserRouter.post("/add", bypass, async (req, res) => {
     const { uname, email, password } = req.body;
 
     if (uname && email && password) {
-    //   const uname=Users.findOne({uname:uname})
-    //   const password=Users.findOne({password:password})
-      const encryptedPassword = await encryptPassword(password);
-      const data = new Users({
-        uname : uname,
-        password : encryptedPassword,
-        email : email
+      // const unames = Users.findOne({ uname: uname });
+      // const passwords = Users.findOne({ password: password });
+      const existingUser = await Users.findOne({
+        $or: [{ uname: uname }, { email: email }],
       });
+
+      if (existingUser) {
+        // If a user with the same uname or email exists, handle the error
+        let message = "Username or email already exists";
+        res.status(400).json({ success: 0, message });
+      } else {
+        const encryptedPassword = await encryptPassword(password);
+        const data = new Users({
+          uname: uname,
+          password: encryptedPassword,
+          email: email,
+        });
 
         await data.save();
         success = 1;
