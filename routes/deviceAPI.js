@@ -2,16 +2,21 @@ const express = require('express')
 require('dotenv').config();
 // app route
 const DeviceRouter = express.Router();
+const utils=require('../utils')
 const bypass = require('../middleware/bypass')
 
 // json web token
 const jwt = require('jsonwebtoken');
 const Device = require('../models/Device');
+const authenticateUser = require('../middleware/AuthUser');
+const Users = require('../models/Users');
 const secretKey = process.env.JWT_SECRET_KEY;
 
 
 DeviceRouter.get('/', bypass, async (req, res) => {
     let success =1;
+    const countDevices=Device.count();
+
     res.status(201).json({success, 'message' : 'API Working'})
 });
 
@@ -50,5 +55,9 @@ DeviceRouter.post('/add',bypass, async (req, res) => {
   
 });
 
-
+DeviceRouter.get('/get',authenticateUser,(req,res)=>{
+ const deviceCount= Device.count();
+ console.log(deviceCount)
+  res.send('device token authenticated')  
+})
 module.exports = DeviceRouter

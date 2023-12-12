@@ -1,4 +1,8 @@
 const bcrypt = require('bcrypt')
+const jwt=require('jsonwebtoken');
+
+require('dotenv').config()
+
 const genSaltRounds = 10
 
 const encryptPassword = async (password) =>{
@@ -14,4 +18,9 @@ const decryptPassword = async(password,encryptedPassword) =>{
    return match
 }
 
-module.exports = { encryptPassword, decryptPassword }
+const deviceAuth=async(token)=>{
+   const verifiedToken=  jwt.verify(token, process.env.JWT_SECRET_KEY);
+//    console.log(verifiedToken.id)
+   return verifiedToken
+}
+module.exports = { encryptPassword, decryptPassword,deviceAuth }

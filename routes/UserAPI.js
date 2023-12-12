@@ -2,7 +2,7 @@ const express = require("express");
 const bypass = require("../middleware/bypass");
 const Users = require("../models/Users");
 
-const {encryptPassword,decryptPassword} = require('../utils')
+const { encryptPassword, decryptPassword } = require("../utils");
 
 require("dotenv").config();
 
@@ -36,11 +36,9 @@ UserRouter.post("/login", bypass, async (req, res) => {
     if (email && password) {
       const fetchedUser = await Users.findOne({ email: email });
       if (fetchedUser) {
-
-        const match = await decryptPassword(password,fetchedUser.password)
-        console.log(match)
+        const match = await decryptPassword(password, fetchedUser.password);
+        console.log(match);
         if (match) {
-            
           let data = {
             id: fetchedUser._id,
           };
@@ -49,15 +47,14 @@ UserRouter.post("/login", bypass, async (req, res) => {
           success = 1;
           let message = "Logged in";
           res.status(200).json({ success, token, message });
-        }
-      else {
-        success = 0;
-        let message = "password doesn't matched";
-        //throw new Error("Password doesn't matched !");
+        } else {
+          success = 0;
+          let message = "password doesn't matched";
+          //throw new Error("Password doesn't matched !");
 
-        res.status(500).json({ success, message });
+          res.status(500).json({ success, message });
+        }
       }
-    }
     } else {
       success = 0;
       let message = "Invalid email or password";
@@ -67,8 +64,8 @@ UserRouter.post("/login", bypass, async (req, res) => {
     }
   } catch (error) {
     success = 0;
-    res.status(500).json({ success, error});
-}
+    res.status(500).json({ success, error });
+  }
 });
 
 UserRouter.post("/add", bypass, async (req, res) => {
@@ -77,19 +74,29 @@ UserRouter.post("/add", bypass, async (req, res) => {
     const { uname, email, password } = req.body;
 
     if (uname && email && password) {
-    //   const uname=Users.findOne({uname:uname})
-    //   const password=Users.findOne({password:password})
-      const encryptedPassword = await encryptPassword(password);
-      const data = new Users({
-        uname : uname,
-        password : encryptedPassword,
-        email : email
+      // const unames = Users.findOne({ uname: uname });
+      // const passwords = Users.findOne({ password: password });
+      const existingUser = await Users.findOne({
+        $or: [{ uname: uname }, { email: email }],
       });
 
-      await data.save();
-      success = 1;
-      let message = "User Added";
-      res.status(201).json({ success, message });
+      if (existingUser) {
+        // If a user with the same uname or email exists, handle the error
+        let message = "Username or email already exists";
+        res.status(400).json({ success: 0, message });
+      } else {
+        const encryptedPassword = await encryptPassword(password);
+        const data = new Users({
+          uname: uname,
+          password: encryptedPassword,
+          email: email,
+        });
+
+        await data.save();
+        success = 1;
+        let message = "User Added";
+        res.status(201).json({ success, message });
+      }
     }
   } catch (err) {
     success = 0;
@@ -97,6 +104,5 @@ UserRouter.post("/add", bypass, async (req, res) => {
     res.status(500).json({ success, message });
   }
 });
-
 
 module.exports = UserRouter;
