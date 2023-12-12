@@ -79,6 +79,12 @@ UserRouter.post("/add", bypass, async (req, res) => {
     if (uname && email && password) {
     //   const uname=Users.findOne({uname:uname})
     //   const password=Users.findOne({password:password})
+    let fetchedUser = await Users.findOne({ email: email });
+    let fetchedU = await Users.findOne({ uname: uname });
+
+    if(fetchedUser || fetchedU){
+      return res.send(300).json({success :0, message = "uname or email exists!!"})
+    }
       const encryptedPassword = await encryptPassword(password);
       const data = new Users({
         uname : uname,
