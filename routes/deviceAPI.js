@@ -55,9 +55,11 @@ DeviceRouter.post('/add',bypass, async (req, res) => {
   
 });
 
-DeviceRouter.get('/get',authenticateUser,(req,res)=>{
- const deviceCount= Device.count();
- console.log(deviceCount)
-  res.send('device token authenticated')  
+DeviceRouter.get('/getlen',authenticateUser, async (req,res)=>{
+ const deviceCount= await Device.find({});
+ const len = deviceCount.length
+
+ console.log(len)
+  res.status(202).json({len,success:1})  
 })
 module.exports = DeviceRouter

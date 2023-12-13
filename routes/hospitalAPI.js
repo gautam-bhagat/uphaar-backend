@@ -10,9 +10,15 @@ hospRouter.get('/',bypass, (req, res) => {
 
 
 hospRouter.get('/all',bypass,async (req, res) => {
-    const all = await Hospital.find({});
-    let obj = { results : all}
-    res.status(200).json(obj);
+    try {
+        const all = await Hospital.find({});
+        let obj = { success :1 ,results : all}
+        res.status(200).json(obj);
+    } catch (error) {
+        let obj = { success :0 ,results : []}
+        res.status(200).json(obj);
+    }
+   
 });
 
 hospRouter.post('/add',bypass, async (req,res)=>{
@@ -23,10 +29,11 @@ hospRouter.post('/add',bypass, async (req,res)=>{
         // console.log(hname,haddress, hcity,hstate,hpincode,hlat,hlong,hphone);
         if(hname && haddress && hcity && hstate && hpincode && hlat && hlong && hphone){
             const data = new Hospital(req.body);
+            console.log(data)
             data.save();
             success = 1;
             let message = 'Added';
-            return res.status(201).json({success,message})
+            return res.status(201).json({success,data,message})
         }
 
         let message = 'Incomplete Data! Kindly come with complete data!!';
@@ -54,11 +61,11 @@ hospRouter.put('/add',bypass, async (req,res)=>{
 
         //if data exists update it
         if(found){
-            await Hospital.updateOne(query,{'hname':hname,'haddress':haddress, 'hcity':hcity,'hstate':hstate,'hpincode':hpincode,'hlat':hlat,'hlong':hlong,'hphone':hphone});
+            let data = await Hospital.updateOne(query,{'hname':hname,'haddress':haddress, 'hcity':hcity,'hstate':hstate,'hpincode':hpincode,'hlat':hlat,'hlong':hlong,'hphone':hphone});
 
             success = 1;
             let message = 'Updated';
-            return res.status(201).json({success,message});
+            return res.status(201).json({success,data, message});
         }
 
         //else return not found
