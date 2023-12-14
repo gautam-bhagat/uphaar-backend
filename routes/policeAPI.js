@@ -75,7 +75,7 @@ hospRouter.put('/add',bypass, async (req,res)=>{
 });
 
 
-hospRouter.delete('/',bypass,async (req, res) => {
+hospRouter.delete('/delete',bypass,async (req, res) => {
     try{
         const {_id } = req.body;
 

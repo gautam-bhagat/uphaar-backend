@@ -75,6 +75,26 @@ hospRouter.put('/add',bypass, async (req,res)=>{
 });
 
 
+hospRouter.get('/:firecity',bypass,async(req,res)=>{
+    try {
+        const city=req.params.firecity;
+        const cityFireStations=await FireService.find({fcity:city});
+        let obj = { success: 1, results: cityFireStations };
+        res.status(200).json(obj);
+    } catch (error) {
+        res.send('Error');
+    }
+})
+hospRouter.get('/:firestate',bypass,async(req,res)=>{
+    try {
+        const state=req.params.firestate;
+        const stateFireStations=await FireService.find({fstate:state});
+        let obj = { success: 1, data: stateFireStations };
+        res.status(200).json(obj);
+    } catch (error) {
+        res.send('Error');
+    }
+})
 hospRouter.delete('/',bypass,async (req, res) => {
     try{
         const {_id } = req.body;

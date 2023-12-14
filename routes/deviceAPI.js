@@ -55,11 +55,12 @@ DeviceRouter.post('/add',bypass, async (req, res) => {
   
 });
 
-DeviceRouter.get('/getlen',authenticateUser, async (req,res)=>{
- const deviceCount= await Device.find({});
- const len = deviceCount.length
 
- console.log(len)
-  res.status(202).json({len,success:1})  
-})
+DeviceRouter.get('/getlen',authenticateUser, async (req,res)=>{
+    const deviceCount= await Device.find({});
+    const len = deviceCount.length
+   
+    console.log(len)
+     res.status(202).json({len,success:1})  
+   })
 module.exports = DeviceRouter
