@@ -26,7 +26,7 @@ hospRouter.post('/add',bypass, async (req,res)=>{
             data.save();
             success = 1;
             let message = 'Added';
-            return res.status(201).json({success,message})
+            return res.status(201).json({success,data,message})
         }
 
         let message = 'Incomplete Data! Kindly come with complete data!!';
