@@ -17,7 +17,6 @@ const decryptPassword = async(password,encryptedPassword) =>{
    const match=await bcrypt.compare(password, encryptedPassword)
    return match
 }
-
 const deviceAuth=async(token)=>{
    const verifiedToken=  jwt.verify(token, process.env.JWT_SECRET_KEY);
 //    console.log(verifiedToken.id)
