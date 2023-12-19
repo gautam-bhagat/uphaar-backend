@@ -95,6 +95,8 @@ hospRouter.get('/:firestate',bypass,async(req,res)=>{
         res.send('Error');
     }
 })
+
+
 hospRouter.delete('/',bypass,async (req, res) => {
     try{
         const {_id } = req.body;

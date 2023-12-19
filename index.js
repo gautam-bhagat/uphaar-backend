@@ -45,6 +45,10 @@ app.use('/api/hospital',require('./routes/hospitalAPI'))
 app.use('/api/fire',require('./routes/fireserviceAPI'))
 app.use('/api/police',require('./routes/policeAPI'))
 app.use('/api/users',require('./routes/UserAPI'))
+app.use('/api/endusers',require('./routes/EndUserAPI'))
+app.use('/api/alerts',require('./routes/AlertAPI'))
+
+
 
 app.listen(port,()=>{
     console.log(`Running at ${port}`)
