@@ -15,12 +15,15 @@ const secretKey = process.env.JWT_SECRET_KEY;
 
 DeviceRouter.get('/', bypass, async (req, res) => {
     let success =1;
-    const countDevices=Device.count();
 
     res.status(201).json({success, 'message' : 'API Working'})
 });
 
-
+DeviceRouter.get('/all', bypass, async (req, res) => {
+    const all = await Device.find({});
+    let obj = {results :  all};
+    res.status(200).json(obj);
+});
 DeviceRouter.post('/add',bypass, async (req, res) => {
 
     let success = 0;
